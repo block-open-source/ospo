@@ -1,0 +1,101 @@
+---
+import { getCollection } from 'astro:content';
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectDetails from '../components/ProjectDetails.astro';
+const projects = await getCollection('project');
+
+const orgs = Array.from(new Set(projects.map(project => project.data.repo.owner)));
+orgs.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+---
+
+<BaseLayout isWide>
+	<div class="projects-container">
+		<nav class="projects-sidebar">
+			{orgs.map(org => (
+				<div class="project-item">
+					<a href={`#${org}`}>
+						{org}
+					</a>
+					<ul class="projects-list">
+						{projects.filter(project => project.data.repo.owner === org).map(({data: project}) => (
+							<li>
+								<a href={`#${project.repo.owner}_${project.repo.name}`}>
+									{project.title ?? project.repo.name}
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			))}
+		</nav>
+		<div class="projects-details">
+			{orgs.map(org => (
+				<div id={`${org}`} class="project-detail">
+					<h2 class="project-detail-title">{org}</h2>
+					{projects.filter(project => project.data.repo.owner === org).map(project => (
+						<ProjectDetails {...project.data} />
+					))}
+				</div>
+			))}
+		</div>
+	</div>
+</BaseLayout>
+
+<style>
+	.projects-container {
+		display: flex;
+		flex-direction: row;
+	}
+
+	/* .projects-sidebar {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		width: 200px;
+	} */
+
+	.projects-sidebar {
+		font-family: "Space-Grotesk", sans-serif;
+		position: sticky;
+		top: 20px; 
+		height: calc(100vh - 40px);
+		overflow-y: auto;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		width: 200px;
+		font-size: .75em;
+	}
+
+	.project-item {
+		margin-bottom: 24px;
+	}
+
+	.project-item > a {
+		display: block;
+		color: rgb(112, 108, 108)!important;
+		padding: 4px 8px;
+		text-decoration: none;
+		font-weight: bold;
+		color: inherit;
+	}
+
+	.projects-list {
+		list-style: none;
+		margin: 0 0 0 24px;
+		padding: 0;
+	}
+
+	.projects-details {
+		flex: 1;
+		padding: 0 48px;
+	}
+
+	.project-detail-title {
+		color: rgb(112, 108, 108)!important;
+		font-size: 24px;
+		font-weight: bold;
+		margin-bottom: 12px;
+	}
+</style>

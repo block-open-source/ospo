@@ -1,0 +1,70 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectBadge from './ProjectBadge.astro';
+type Props = CollectionEntry<'project'>['data'];
+
+const { title, description, repo, ciChecks, licenses, securityScans, scoreCards, sastChecks, tests, packages } = Astro.props;
+---
+<div class="project-details">
+    <h3 id={`${repo.owner}_${repo.name}`}>{title ?? repo.name}</h3>
+    {description}<br/>
+    <small>
+        <a href={`https://github.com/${repo.owner}/${repo.name}`}>
+            {repo.owner}/{repo.name}
+        </a>
+    </small>
+    <div class="project-details-cards-grid">
+        {ciChecks && <div class="project-details-card">
+            <h4>CI Checks</h4>
+            {ciChecks.map(ciCheck => <ProjectBadge repo={repo} badge={ciCheck} />)}
+        </div>}
+        {licenses && <div class="project-details-card">
+            <h4>Licenses</h4>
+            {licenses.map(license => <ProjectBadge repo={repo} badge={license} />)}
+        </div>}
+        {securityScans && <div class="project-details-card">
+            <h4>Security Scans</h4>
+            {securityScans.map(securityScan => <ProjectBadge repo={repo} badge={securityScan} />)}
+        </div>}
+        {scoreCards && <div class="project-details-card">
+            <h4>Score Cards</h4>
+            {scoreCards.map(scoreCard => <ProjectBadge repo={repo} badge={scoreCard} />)}
+        </div>}
+        {sastChecks && <div class="project-details-card">
+            <h4>SAST Checks</h4>
+            {sastChecks.map(sastCheck => <ProjectBadge repo={repo} badge={sastCheck} />)}
+        </div>}
+        {tests && <div class="project-details-card">
+            <h4>Tests</h4>
+            {tests.map(test => <ProjectBadge repo={repo} badge={test} />)}
+        </div>}
+    </div>
+</div>
+
+<style>
+    .project-details {
+        margin-bottom: 2em;
+    }
+
+    .project-details h3 {
+        font-size: 1.5em;
+    }
+
+    .project-details h4 {
+        font-size: 1em;
+    }
+
+    .project-details-cards-grid {
+        margin-top: 1em;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1em;
+    }
+
+    .project-details-card {
+        border: 1px solid lightgray;
+        border-radius: 4px;
+        padding: 1.2em;
+        min-height: 128px;
+    }
+</style>
