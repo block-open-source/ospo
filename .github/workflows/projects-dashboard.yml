@@ -1,8 +1,16 @@
-name: Deploy projects-dashboard to GitHub Pages
+name: Build projects-dashboard and maybe Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
+    paths:
+      - "projects-dashboard/**"
+      - ".github/workflows/projects-dashboard.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "projects-dashboard/**"
+      - ".github/workflows/projects-dashboard.yml"
   workflow_dispatch:
 
 # Allow this job to clone the repo and create a page deployment
@@ -25,6 +33,8 @@ jobs:
           package-manager: pnpm@9
 
   deploy:
+    # Only deploy on main
+    if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     environment:
