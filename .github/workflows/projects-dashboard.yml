@@ -55,6 +55,11 @@ jobs:
           GITHUB_REF_NAME: ${{ github.ref_name }}
         run: |
           ls -R ./projects-dashboard-site
+          cd ./projects-dashboard-site
+          tar -xvf artifact.tar .
+          rm artifact.tar
+          cd ..
+          ls -R ./projects-dashboard-site
 
           if [ "$GITHUB_HEAD_REF" != "" ]; then
             # This is a pull request
