@@ -2,7 +2,7 @@
 
 It's a static generated dashboard to list our maintained open source projects and their health status.
 
-Visit the [live dashboard](https://block-open-source.github.io/projects-dashboard/).
+Visit the [live dashboard](https://block-open-source.github.io/ospo/projects-dashboard/).
 
 ## Ready to open source your project?
 
