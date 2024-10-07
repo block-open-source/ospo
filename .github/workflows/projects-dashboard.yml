@@ -39,11 +39,14 @@ jobs:
     #   name: github-pages
     #   url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Checkout your repository using git
+        uses: actions/checkout@v4
+
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
           name: github-pages
-          path: ./projects-dashboard
+          path: ./projects-dashboard-site
 
       - name: Get target folder
         id: get-target-folder
@@ -72,5 +75,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: ./projects-dashboard
+          folder: ./projects-dashboard-site
           target-folder: ${{ steps.get-target-folder.outputs.path }}
