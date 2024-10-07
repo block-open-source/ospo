@@ -46,7 +46,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: github-pages
-          path: ./projects-dashboard-site
+          path: projects-dashboard-site
 
       - name: Get target folder
         id: get-target-folder
@@ -75,5 +75,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: ./projects-dashboard-site
+          folder: projects-dashboard-site
           target-folder: ${{ steps.get-target-folder.outputs.path }}
