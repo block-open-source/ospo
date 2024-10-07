@@ -33,14 +33,35 @@ jobs:
           package-manager: pnpm@9
 
   deploy:
-    # Only deploy on main
-    if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: ./projects-dashboard
+
+      - name: Get target folder
+        id: get-target-folder
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          if [ "$BRANCH" != "main" ]; then
+            # sanitize branch name
+            BRANCH=$(echo "$BRANCH" | tr '/' '_')
+            echo "path=projects-dashboard-preview-$BRANCH" >> $GITHUB_OUTPUT
+          else
+            echo "path=projects-dashboard" >> $GITHUB_OUTPUT
+          fi
+
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: ./projects-dashboard
+          target-folder: ${{ steps.get-target-folder.outputs.path }}
