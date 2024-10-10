@@ -10,7 +10,6 @@ const baseURL = import.meta.env.BASE_URL;
     <h2><a href={baseURL}>{SITE_TITLE}</a></h2>
     <div class="internal-links">
       <HeaderLink href={baseURL}>Projects</HeaderLink>
-      <HeaderLink href={`${baseURL}/about`}>About</HeaderLink>
     </div>
   </nav>
 </header>
@@ -53,5 +52,8 @@ const baseURL = import.meta.env.BASE_URL;
     .social-links {
       display: none;
     }
+  }
+  .internal-links {
+    min-height: 56px;
   }
 </style>
