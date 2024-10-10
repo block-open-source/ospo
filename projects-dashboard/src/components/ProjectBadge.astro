@@ -1,0 +1,18 @@
+---
+import type { Repo, Badge } from '../content/config';
+import { getBadgeInfo } from '../lib/badge';
+
+type Props = {
+    repo: Repo;
+    badge: Badge;
+}
+
+const { repo, badge: { type, label, value } } = Astro.props;
+
+const [badgeSrc, href] = getBadgeInfo(repo, type, label, value)
+---
+<div class="project-badge">
+    <a href={href} target="_blank">
+        <img src={badgeSrc} />
+    </a>
+</div>
