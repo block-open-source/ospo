@@ -83,7 +83,6 @@ jobs:
           cd ./projects-dashboard-site
           tar -xvf artifact.tar .
           rm artifact.tar
-          touch .nojekyll
           cd ..
           ls -R ./projects-dashboard-site
 

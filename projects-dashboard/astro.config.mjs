@@ -9,4 +9,7 @@ export default defineConfig({
   site: "https://block-open-source.github.io",
   base: "ospo/projects-dashboard",
   integrations: [mdx(), sitemap()],
+  build: {
+    assets: "generated-assets",
+  },
 });
