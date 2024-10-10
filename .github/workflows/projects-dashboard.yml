@@ -1,0 +1,108 @@
+name: Build and deploy projects-dashboard
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "projects-dashboard/**"
+      - ".github/workflows/projects-dashboard.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "projects-dashboard/**"
+      - ".github/workflows/projects-dashboard.yml"
+  workflow_dispatch:
+
+# Allow this job to clone the repo and write comments
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      path: ${{ steps.get-target-folder.outputs.path }}
+    steps:
+      - name: Checkout your repository using git
+        uses: actions/checkout@v4
+
+      - name: Get target folder
+        id: get-target-folder
+        env:
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$GITHUB_HEAD_REF" != "" ]; then
+            # This is a pull request
+            BRANCH=$GITHUB_HEAD_REF
+          else
+            # This is a push to a branch
+            BRANCH=$GITHUB_REF_NAME
+          fi
+
+          TARGET_PATH=projects-dashboard
+          if [ "$BRANCH" != "main" ]; then
+            # sanitize branch name
+            BRANCH=$(echo "$BRANCH" | sed 's/[^a-zA-Z0-9-]/_/g')
+            TARGET_PATH=projects-dashboard-preview-$BRANCH
+          fi
+          echo "path=$TARGET_PATH" >> $GITHUB_OUTPUT
+
+          # replace basepath in astro.config.mjs using $PATH
+          sed -i "s|ospo/projects-dashboard|ospo/${TARGET_PATH}|g" projects-dashboard/astro.config.mjs
+          cat projects-dashboard/astro.config.mjs
+
+      - name: Prepare preview path
+        if: github.event_name == 'pull_request'
+        run: |
+          npm install -g pnpm
+
+      - name: Install, build, and upload your site
+        uses: withastro/action@v3
+        with:
+          path: ./projects-dashboard
+          node-version: 20
+          package-manager: pnpm@9
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repository using git
+        uses: actions/checkout@v4
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: projects-dashboard-site
+
+      - name: Unzip site artifact
+        run: |
+          cd ./projects-dashboard-site
+          tar -xvf artifact.tar .
+          rm artifact.tar
+          cd ..
+          ls -R ./projects-dashboard-site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: projects-dashboard-site
+          target-folder: ${{ needs.build.outputs.path }}
+
+      # Add a comment to the PR with the link to the deployed site
+      - name: Add preview comment to PR
+        if: github.event_name == 'pull_request'
+        uses: thollander/actions-comment-pull-request@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          comment_tag: preview-deploy
+          message: |
+            Site preview deployed to: https://block-open-source.github.io/ospo/${{ needs.build.outputs.path }}
+
+            _(execution **[#${{ github.run_id }}](https://github.com/block-open-source/ospo/actions/runs/${{ github.run_id }})** / attempt **${{ github.run_attempt }}**)_
