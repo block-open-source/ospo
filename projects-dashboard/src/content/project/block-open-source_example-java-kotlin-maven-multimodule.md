@@ -23,4 +23,22 @@ sastChecks:
     value: "codeql.yml"
 tests:
   - type: "codecov"
+packages:
+  - packageName: "java-kotlin-maven-example-api"
+    repoPath: "api"
+    language: "java"
+    artifacts:
+      - type: "maven"
+        value: "xyz.block/java-kotlin-maven-example-api"
+  - packageName: "java-kotlin-maven-example-impl"
+    repoPath: "impl"
+    language: "java"
+    artifacts:
+      - type: "maven"
+        value: "xyz.block/java-kotlin-maven-example-impl"
+  - packageName: "java-kotlin-maven-example-parent"
+    language: "java"
+    artifacts:
+      - type: "maven"
+        value: "xyz.block/java-kotlin-maven-example-parent"
 ---

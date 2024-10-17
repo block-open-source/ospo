@@ -1,0 +1,100 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+import LanguageIcon from "./LanguageIcon.astro";
+import ProjectBadge from "./ProjectBadge.astro";
+
+type Props = {
+  packages: NonNullable<CollectionEntry<"project">["data"]["packages"]>;
+  repo: CollectionEntry<"project">["data"]["repo"];
+};
+
+const { packages, repo } = Astro.props;
+---
+
+<div class="project-details-packages">
+  <table>
+    <thead>
+      <tr>
+        <th class="package-name-col">Released Packages</th>
+        <th class="latest-release-col">Latest Release</th>
+        <th class="artifacts-col">Artifacts</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        packages.map((pkg) => (
+          <tr>
+            <td class="package-name-col">
+              <a
+                href={`https://github.com/${repo.owner}/${repo.name}${pkg.repoPath ? `/tree/main/${pkg.repoPath}` : ""}`}
+                target="_blank"
+              >
+                {pkg.packageName}
+              </a>
+              <LanguageIcon language={pkg.language} />
+            </td>
+            <td class="latest-release-col">
+              <ProjectBadge
+                repo={repo}
+                badge={{
+                  type: "github-tag",
+                  value: pkg.ghTagFilter,
+                }}
+              />
+            </td>
+            <td class="artifacts-col">
+              {pkg.artifacts.map((artifact) => (
+                <ProjectBadge
+                  repo={repo}
+                  badge={{ type: artifact.type, value: artifact.value }}
+                />
+              ))}
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .project-details-packages {
+    margin-top: 1.5em;
+    font-size: 0.8em;
+    border-left: 4px solid #999;
+    padding: 0 0;
+    min-height: 96px;
+  }
+
+  .project-details-packages table {
+    border-spacing: 1em 0;
+  }
+
+  .project-details-packages td {
+    vertical-align: top;
+    text-align: left;
+    padding-top: 0.5em;
+  }
+
+  .project-details-packages th {
+    font-size: 1em;
+  }
+
+  .package-name-col {
+    min-width: 200px;
+    width: 20%;
+  }
+
+  .latest-release-col {
+    min-width: 200px;
+    width: 20%;
+  }
+
+  .artifacts-col {
+    width: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2em 0.5em;
+  }
+</style>

@@ -1,6 +1,9 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+
 import ProjectBadge from './ProjectBadge.astro';
+import ProjectDetailsPackages from './ProjectDetailsPackages.astro';
+
 type Props = CollectionEntry<'project'>['data'];
 
 const { title, description, repo, ciChecks, licenses, securityScans, scoreCards, sastChecks, tests, packages } = Astro.props;
@@ -39,6 +42,7 @@ const { title, description, repo, ciChecks, licenses, securityScans, scoreCards,
             {tests.map(test => <ProjectBadge repo={repo} badge={test} />)}
         </div>}
     </div>
+    {packages && packages.length > 0 && <ProjectDetailsPackages packages={packages} repo={repo} />}
 </div>
 
 <style>

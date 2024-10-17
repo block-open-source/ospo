@@ -21,7 +21,7 @@ const languageSchema = z.enum([
 
 export type Language = z.infer<typeof languageSchema>;
 
-const artifactTypeSchema = z.enum(["npm", "maven", "pip", "reference-docs"]);
+const artifactTypeSchema = z.enum(["npm", "maven", "reference-docs"]);
 
 export type ArtifactType = z.infer<typeof artifactTypeSchema>;
 
@@ -36,18 +36,26 @@ const packageSchema = z.object({
   repoPath: z.string().optional(),
   language: languageSchema,
   artifacts: z.array(artifactSchema),
+  ghTagFilter: z.string().optional(),
 });
 
+const badgeTypeSchema = z.enum([
+  "github-actions",
+  "github-license",
+  "github-tag",
+  "fossa-license",
+  "fossa-security",
+  "ossf",
+  "codecov",
+  "tbd-vectors",
+  "npm",
+  "maven",
+  "reference-docs",
+]);
+
+export type BadgeType = z.infer<typeof badgeTypeSchema>;
 const badgeSchema = z.object({
-  type: z.enum([
-    "github-actions",
-    "github-license",
-    "fossa-license",
-    "fossa-security",
-    "ossf",
-    "codecov",
-    "tbd-vectors",
-  ]),
+  type: badgeTypeSchema,
   label: z.string().optional(),
   value: z.string().optional(),
 });
