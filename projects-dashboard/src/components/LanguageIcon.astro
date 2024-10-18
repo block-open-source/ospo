@@ -1,0 +1,35 @@
+---
+import type { Language } from "../content/config";
+
+type Props = {
+  language: Language;
+};
+
+const { language } = Astro.props;
+
+const iconMap = {
+  javascript: { icon: "js", color: "#c9af00" },
+  typescript: { icon: "ts", color: "#3178c6" },
+  kotlin: { icon: "kt", color: "#6b47d2" },
+  swift: { icon: "swift", color: "#f05138" },
+  rust: { icon: "rs", color: "#dea584" },
+  go: { icon: "go", color: "#00ADD8" },
+  java: { icon: "java", color: "#b07219" },
+  python: { icon: "py", color: "#3572A5" },
+};
+---
+
+<div class="language-icon" style={{ backgroundColor: iconMap[language].color }}>
+  {iconMap[language].icon}
+</div>
+
+<style>
+  .language-icon {
+    display: inline-block;
+    padding: 0.2em 0.5em;
+    font-size: 0.6em;
+    background-color: lightgray;
+    color: white;
+    margin-left: 0.2em;
+  }
+</style>

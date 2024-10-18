@@ -20,11 +20,11 @@ tests:
   - type: "codecov"
 packages:
   - packageName: "xyz.block.tbdex"
-    repoPath: "packages/common"
+    repoPath: "bound/kt"
     language: "kotlin"
     artifacts:
       - type: "maven"
-        value: "xyz.block.tbdex"
+        value: "xyz.block/tbdex"
       - type: "reference-docs"
         value: "https://tbd54566975.github.io/tbdex-rs/kt/v4.0.0/" # TODO: get version dynamically
 ---
